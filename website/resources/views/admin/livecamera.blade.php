@@ -363,10 +363,9 @@
                 <div class="row">
                     <!-- Left side (you can add controls/info here if needed) -->
                     <div class="col-md-6 mb-3">
-                        <div class="h-100 d-flex align-items-center justify-content-center bg-light rounded" style="min-height:300px;">
-                           
-                            <h5 class="text-muted">Capture Data</h5>
-                        </div>
+                       <div class="h-100 d-flex align-items-center justify-content-center bg-light rounded" style="min-height:300px;">
+                
+                </div>
                     </div>
                 
                     <div class="col-md-6">

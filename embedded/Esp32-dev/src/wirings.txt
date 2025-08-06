@@ -1,0 +1,30 @@
+ESP-32 to LCD
+
+VCC - 3.3V
+GND - GND
+CS - D5 
+RESET -	D4 
+DC/RS -	D2
+SDI/MOSI - D23	
+SCK - D18	
+LED - 3.3V	    
+
+ESP32 to Relay to SOLENOID
+
+charger 12v:   
+        (+) of the charger make two wire 
+            1. one for VCC relay
+            2. one to Relay COM
+        (-) of the charger twist about 4 wires together with the (-) of the charger
+            1. first wire connect it to the GND of the Relay
+            2. Second wire connect it to the GND of esp32wroom
+            3. Third wire connect it to the (-) of SOLENOID
+            4. Fourth wire connect it to the left (Emitter {E} - Left) Of the transistor
+Relay:
+        Relay (IN) connect it to the right part of transistor (Collector {C} - Right)
+        Relay (NO) connect to the (+) of solenoid
+
+Esp32 to Breadboard with resistor 1K and to transistor:
+        from D12 of ESP32 pins to the breadboard left end of the resistor and right end of resistor to the transistor (Base {B} - Middle)
+
+GPIO13 or D13 = use for button for all time access of relay

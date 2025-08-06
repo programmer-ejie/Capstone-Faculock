@@ -348,19 +348,51 @@
       <!-- [ breadcrumb ] end -->
 
       <!-- [ Main Content ] start -->
+
+
+
+
       <div class="row">
         <!-- [ sample-page ] start -->
         <div class="col-sm-12">
           <div class="card">
             <div class="card-header">
-              <h5>Hello card</h5>
+              <h5>Live Camera</h5>
             </div>
-            <div class="card-body">
+           <div class="card-body">
+                <div class="row">
+                    <!-- Left side (you can add controls/info here if needed) -->
+                    <div class="col-md-6 mb-3">
+                        <div class="h-100 d-flex align-items-center justify-content-center bg-light rounded" style="min-height:300px;">
+                           
+                            <h5 class="text-muted">Capture Data</h5>
+                        </div>
+                    </div>
+                
+                    <div class="col-md-6">
+                        <div class="bg-dark rounded p-2 d-flex align-items-center justify-content-center" style="height:320px;">
+                            <img id="live-camera" src="http://192.168.0.106/frame.jpg" alt="wifi is slow" class="img-fluid rounded" style="max-height:100%; max-width:100%; object-fit:cover;">
+                        </div>
+                    </div>
+                </div>
             </div>
+            <script>
+                setInterval(function() {
+                    const img = document.getElementById('live-camera');
+                    if(img) {
+                        img.src = 'http://192.168.0.106/frame.jpg?t=' + new Date().getTime();
+                    }
+                }, 100);
+            </script>
           </div>
         </div>
         <!-- [ sample-page ] end -->
       </div>
+
+
+
+
+
       <!-- [ Main Content ] end -->
     </div>
   </div>

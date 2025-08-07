@@ -1,0 +1,128 @@
+#include <WiFi.h>
+#include <HTTPClient.h>
+#include <SPI.h>
+#include <Adafruit_GFX.h>
+#include <Adafruit_ILI9341.h>
+#include <TJpg_Decoder.h>
+
+// ==== Wi-Fi credentials ====
+const char* ssid = "Demo";
+const char* password = "ejieflorida";
+
+// ==== Display Pins ====
+#define TFT_CS   5
+#define TFT_DC   2
+#define TFT_RST  4
+
+Adafruit_ILI9341 tft = Adafruit_ILI9341(TFT_CS, TFT_DC, TFT_RST);
+
+// ==== JPEG decode callback (optimized) ====
+bool tft_output(int16_t x, int16_t y, uint16_t w, uint16_t h, uint16_t *bitmap) {
+  // Draw the resized block
+  tft.drawRGBBitmap(x, y, bitmap, w, h);
+  return true;
+}
+
+// ==== Resize function for the image (forces full-screen display) ====
+void resizeImage(uint8_t *jpgBuffer, int bufferLength, uint16_t screenWidth, uint16_t screenHeight) {
+  uint16_t imgWidth, imgHeight;
+
+  // Get image size
+  TJpgDec.getJpgSize(&imgWidth, &imgHeight, jpgBuffer, bufferLength);
+
+  // Check if the image size is 0x0
+  if (imgWidth == 0 || imgHeight == 0) {
+    Serial.println("No face detected");
+    tft.fillScreen(ILI9341_BLACK);  // Clear screen
+    tft.setCursor(10, 10);
+    tft.setTextColor(ILI9341_RED);
+    tft.setTextSize(2);
+    tft.println("Slow Wifi Connection!");
+    return;
+  }
+
+  Serial.printf("Original Image size: %d x %d\n", imgWidth, imgHeight);
+
+  // Enforce the image to fit the screen (ignore aspect ratio)
+  uint16_t newWidth = screenWidth;
+  uint16_t newHeight = screenHeight;
+
+  // Resize and draw the image with the forced dimensions
+  TJpgDec.drawJpg(0, 0, jpgBuffer, bufferLength);  // Draw the image on the screen
+}
+
+// ==== Fetch JPEG and render from URL ====
+void fetchAndRenderJPG(const char *url) {
+  HTTPClient http;
+  http.begin(url);
+  int httpCode = http.GET();
+
+  if (httpCode == HTTP_CODE_OK) {
+    WiFiClient *stream = http.getStreamPtr();
+
+    // Allocate memory buffer
+    const int maxSize = 30000; // Adjust depending on your JPEG size
+    uint8_t *jpgBuffer = (uint8_t *)malloc(maxSize);
+    if (!jpgBuffer) {
+      Serial.println("Memory allocation failed");
+      return;
+    }
+
+    int index = 0;
+    while (http.connected() && stream->available() && index < maxSize) {
+      int c = stream->read();
+      if (c < 0) break;
+      jpgBuffer[index++] = (uint8_t)c;
+    }
+
+    // Clear screen before rendering
+    tft.fillScreen(ILI9341_BLACK);
+
+    // Resize the image to fit the screen
+    resizeImage(jpgBuffer, index, tft.width(), tft.height());
+
+    free(jpgBuffer);
+  } else {
+    tft.fillScreen(ILI9341_BLACK);
+    tft.setCursor(10, 60);
+    tft.setTextColor(ILI9341_RED);
+    tft.setTextSize(2);
+    tft.println("Image load failed");
+  }
+
+  http.end();
+}
+
+void setup() {
+  Serial.begin(115200);
+  tft.begin();
+  
+  // Set rotation to portrait mode
+  tft.setRotation(3);  // Adjust for portrait view (0 = Landscape, 1 = Portrait, 2 = Inverted Landscape, 3 = Inverted Portrait)
+
+  tft.fillScreen(ILI9341_BLACK);
+
+  tft.setCursor(10, 10);
+  tft.setTextColor(ILI9341_WHITE);
+  tft.setTextSize(2);
+  tft.println("Connecting WiFi...");
+
+  WiFi.begin(ssid, password);
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(500);
+    Serial.print(".");
+  }
+
+  tft.fillScreen(ILI9341_BLACK);
+  tft.setCursor(10, 10);
+  tft.println("WiFi Connected!");
+
+  // Setup JPEG decoder
+  TJpgDec.setCallback(tft_output);
+  TJpgDec.setSwapBytes(false);  // Adjust if colors are still off
+}
+
+void loop() {
+  fetchAndRenderJPG("http://192.168.161.49/frame.jpg");
+  delay(100); // Refresh every 0.5 second (adjust as needed)
+}

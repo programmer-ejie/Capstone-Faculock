@@ -2,8 +2,18 @@
 #include "esp_camera.h"
 #include <WebServer.h>
 
-const char* ssid = "Florida-Fi 📶";
-const char* password = "florida$$$";
+// Wi-Fi credentials
+// const char* ssid = "Yepes_Wifi_Wi-Fi5";
+// const char* password = "haroldflint@@";
+
+// const char* ssid = "Florida-Fi 📶";
+// const char* password = "florida$$$";
+
+//const char* ssid = "Aiz";
+//const char* password = "zzzzzzzz";
+
+const char* ssid = "Gaviola wifi";
+const char* password = "gaviola2024";
 
 // AI Thinker ESP32-CAM pin definitions
 #define PWDN_GPIO_NUM     32

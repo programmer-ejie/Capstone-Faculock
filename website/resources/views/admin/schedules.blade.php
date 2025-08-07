@@ -506,7 +506,12 @@
                                             </h5>
                                             <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
                                         </div>
+                                         
                                         <div class="offcanvas-body px-4 py-3">
+                                             <div class="alert alert-info mt-1 mb-3" style="font-size: 0.95rem; margin-top: auto;">
+                                                <i class="ti ti-info-circle me-2"></i>
+                                                <b>Note: </b> This function is view only!
+                                            </div>
                                             <form>
                                                 <div class="mb-2">
                                                     <label class="form-label fw-semibold">Course Code</label>
@@ -602,9 +607,9 @@
                                                     </button>
                                                 </div>
                                             </form>
-                                            <div class="alert alert-info mt-4" style="font-size: 0.95rem;">
+                                             <div class="alert alert-info mt-4 mb-0" style="font-size: 0.95rem; margin-top: auto;">
                                                 <i class="ti ti-info-circle me-2"></i>
-                                                <b>Edit Tip:</b> Update schedule details and save changes.
+                                                <b>Edit Tip:</b> Update schedule details
                                             </div>
                                         </div>
                                     </div>

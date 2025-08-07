@@ -63,7 +63,7 @@
             </a>
             </li>
             <li class="pc-item">
-            <a href="../elements/bc_typography.html" class="pc-link">
+            <a href="{{route('admin.schedules')}}" class="pc-link">
                 <span class="pc-micon"><i class="ti ti-calendar"></i></span> <!-- Calendar icon -->
                 <span class="pc-mtext">Schedules</span>
             </a>
@@ -356,23 +356,74 @@
         <!-- [ sample-page ] start -->
         <div class="col-sm-12">
           <div class="card">
-            <div class="card-header">
-              <h5>Live Camera</h5>
-            </div>
+            <div class="card-header d-flex justify-content-between align-items-center">
+              <h5 class="mb-0">Live Camera</h5>
+
+              <select id="camera-source" class="form-select w-auto">
+                  <option value="esp32">ESP32 Cam</option>
+                  <option value="builtin">Built-in Cam</option>
+              </select>
+          </div>
            <div class="card-body">
                 <div class="row">
                     <!-- Left side (you can add controls/info here if needed) -->
-                    <div class="col-md-6 mb-3">
-                       <div class="h-100 d-flex align-items-center justify-content-center bg-light rounded" style="min-height:300px;">
-                
-                </div>
-                    </div>
-                
-                    <div class="col-md-6">
-                        <div class="bg-dark rounded p-2 d-flex align-items-center justify-content-center" style="height:320px;">
-                            <img id="live-camera" src="http://192.168.0.106/frame.jpg" alt="wifi is slow" class="img-fluid rounded" style="max-height:100%; max-width:100%; object-fit:cover;">
-                        </div>
-                    </div>
+                   <div class="col-md-6 mb-3">
+                      <div class="bg-dark rounded p-3 d-flex flex-column align-items-center justify-content-center shadow" style="height:340px; position:relative;">
+                          <h6 class="text-white mb-2"><i class="ti ti-photo"></i> Latest Captured Image</h6>
+                          @if ($latestImageUrl)
+                              <div style="position:relative;">
+                                  <img id="latest-image" src="{{ $latestImageUrl }}" alt="Failed to get Frame. Try Again!" 
+                                      class="img-fluid rounded border border-3 border-light shadow-sm"
+                                      style="max-height:260px; max-width:100%; object-fit:cover; background:#222;">
+                                  <div id="latest-image-spinner" style="display:none; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);">
+                                      <div class="spinner-border text-light" role="status" style="width:2rem; height:2rem;">
+                                          <span class="visually-hidden">Loading...</span>
+                                      </div>
+                                  </div>
+                              </div>
+                          @else
+                              <p class="text-light">No image available</p>
+                          @endif
+                          <small class="text-light mt-2">This updates automatically every 2 seconds.</small>
+                          <script>
+                              setInterval(() => {
+                                  fetch('/latest-user-image')
+                                      .then(response => response.json())
+                                      .then(data => {
+                                          const img = document.getElementById('latest-image');
+                                          const spinner = document.getElementById('latest-image-spinner');
+                                          if (img && data.url) {
+                                              if (img.src.split('?')[0] !== location.origin + data.url) {
+                                                  if (spinner) spinner.style.display = 'block';
+                                                  img.onload = () => { if (spinner) spinner.style.display = 'none'; };
+                                                  img.src = data.url + '?t=' + new Date().getTime();
+                                              } else {
+                                                  img.src = data.url + '?t=' + new Date().getTime();
+                                              }
+                                          }
+                                      });
+                              }, 2000);
+                          </script>
+                      </div>
+                  </div>
+
+                  <div class="col-md-6 mb-3">
+                      <div class="bg-dark rounded p-3 d-flex flex-column align-items-center justify-content-center shadow" style="height:340px;">
+                          <h6 class="text-white mb-2"><i class="ti ti-camera"></i> ESP32 Live Stream</h6>
+                          <img id="live-camera" src="http://192.168.0.106/frame.jpg" alt="WiFi is slow" 
+                              class="img-fluid rounded border border-3 border-secondary shadow-sm"
+                              style="max-height:260px; max-width:100%; object-fit:cover; background:#222;">
+                          <small class="text-light mt-2">Live feed from ESP32 Cam (refreshes every 0.1s)</small>
+                      </div>
+                  </div>
+                  <script>
+                      setInterval(function() {
+                          const img = document.getElementById('live-camera');
+                          if(img) {
+                              img.src = 'http://192.168.0.106/frame.jpg?t=' + new Date().getTime();
+                          }
+                      }, 100);
+                  </script>
                 </div>
             </div>
             <script>
@@ -384,6 +435,11 @@
                 }, 100);
             </script>
           </div>
+        </div>
+
+
+        <div class="row">
+
         </div>
         <!-- [ sample-page ] end -->
       </div>

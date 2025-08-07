@@ -154,7 +154,7 @@ void loop() {
        if (captureUserPicture) { 
             captureUserPicture = false;
             HTTPClient postHttp;
-            postHttp.begin("http://192.168.0.105:8001/api/upload_user_picture"); //gamiton and ip address jud sa server or laptop gamit ipconfig
+            postHttp.begin("http://192.168.0.105:8000/api/upload_user_picture"); //gamiton and ip address jud sa server or laptop gamit ipconfig
             postHttp.addHeader("Content-Type", "application/octet-stream");
             int postCode = postHttp.POST(jpgBuffer, index);
               tft.fillScreen(TFT_BLACK);

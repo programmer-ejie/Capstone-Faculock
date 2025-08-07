@@ -6,28 +6,9 @@ use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class VerifyCsrfToken extends Middleware
+class VerifyCsrfToken
 {
-    /**
-     * The URIs that should be excluded from CSRF verification.
-     *
-     * @var array<int, string>
-     */
-    protected $except = [
-        '/upload_user_picture',
-        'api/*',
+   protected $except = [
+       'upload_user_picture',
     ];
-
-
-    /**
-     * Handle an incoming request.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
-     * @return \Symfony\Component\HttpFoundation\Response
-     */
-        public function handle(Request $request, Closure $next): Response
-        {
-            return parent::handle($request, $next);
-        }
 }

@@ -10,6 +10,9 @@
 // const char* ssid = "Florida-Fi 📶";
 // const char* password = "florida$$$";
 
+const char* ssid = "Gaviola 5g";
+const char* password = "gaviola2024";
+
 void setup() {
   // Start the Serial Monitor
   Serial.begin(115200);

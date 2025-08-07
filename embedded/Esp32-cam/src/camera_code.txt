@@ -12,6 +12,9 @@
 //const char* ssid = "Aiz";
 //const char* password = "zzzzzzzz";
 
+const char* ssid = "Gaviola 5g";
+const char* password = "gaviola2024";
+
 // AI Thinker ESP32-CAM pin definitions
 #define PWDN_GPIO_NUM     32
 #define RESET_GPIO_NUM    -1

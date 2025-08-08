@@ -1,0 +1,29 @@
+Loaded embeddings successfully
+Processing image: ../captured_frames/captured_frame.png
+
+[1m1/1[0m [32m━━━━━━━━━━━━━━━━━━━━[0m[37m[0m [1m0s[0m 7s/step
+[1m1/1[0m [32m━━━━━━━━━━━━━━━━━━━━[0m[37m[0m [1m7s[0m 7s/step
+{"prediction": [{"label": "Ejie Florida (0.83)", "confidence": 0.8272275924682617}]}
+Loaded embeddings successfully
+Processing image: ../captured_frames/captured_frame.png
+
+[1m1/1[0m [32m━━━━━━━━━━━━━━━━━━━━[0m[37m[0m [1m0s[0m 8s/step
+[1m1/1[0m [32m━━━━━━━━━━━━━━━━━━━━[0m[37m[0m [1m8s[0m 8s/step
+{"prediction": [{"label": "Ejie Florida (0.83)", "confidence": 0.8266749382019043}]}
+
+[1m1/1[0m [32m━━━━━━━━━━━━━━━━━━━━[0m[37m[0m [1m0s[0m 7s/step
+[1m1/1[0m [32m━━━━━━━━━━━━━━━━━━━━[0m[37m[0m [1m7s[0m 7s/step
+
+[1m1/1[0m [32m━━━━━━━━━━━━━━━━━━━━[0m[37m[0m [1m0s[0m 181ms/step
+[1m1/1[0m [32m━━━━━━━━━━━━━━━━━━━━[0m[37m[0m [1m0s[0m 181ms/step
+{"prediction": [{"label": "Ejie Florida (0.87)", "confidence": 0.8695656061172485}, {"label": "Unauthorized (0.18)", "confidence": 0.17673534154891968}]}
+
+[1m1/1[0m [32m━━━━━━━━━━━━━━━━━━━━[0m[37m[0m [1m0s[0m 7s/step
+[1m1/1[0m [32m━━━━━━━━━━━━━━━━━━━━[0m[37m[0m [1m7s[0m 7s/step
+{"prediction": [{"label": "Ejie Florida (0.81)", "confidence": 0.8053086400032043}]}
+Error: Failed to load image from ../captured_frames/captured_frame.png
+Error: Failed to load image from ../captured_frames/captured_frame.png
+Error: Failed to load image from ../captured_frames/captured_frame.png
+Error: Failed to load image from ../captured_frames/captured_frame.png
+Error: Failed to load image from ../captured_frames/captured_frame.png
+Error: Failed to load image from ../captured_frames/captured_frame.png

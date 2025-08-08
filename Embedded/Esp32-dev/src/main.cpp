@@ -15,11 +15,11 @@
 // const char* ssid = "TUL ED PISO WIFI";
 // const char* password = "";
 
-// const char* ssid = "Florida-Fi 📶";
-// const char* password = "florida$$$";
+const char* ssid = "Florida-Fi 📶";
+const char* password = "florida$$$";
 
-const char* ssid = "Gaviola wifi";
-const char* password = "gaviola2024";
+// const char* ssid = "Gaviola wifi";
+// const char* password = "gaviola2024";
 
 #define RELAY_PIN 12
 #define BUTTON_PIN 13

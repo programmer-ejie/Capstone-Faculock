@@ -5,7 +5,7 @@ include('../db_connection/conn.php');
 // Fetch data for graphs
 // Logs count by month
 $logsData = [];
-$logsQuery = mysqli_query($conn, "SELECT MONTH(notif_date) AS month, COUNT(*) AS count FROM logs GROUP BY MONTH(notif_date)");
+$logsQuery = mysqli_query($conn, "SELECT MONTH(created_at) AS month, COUNT(*) AS count FROM logs GROUP BY MONTH(created_at)");
 while ($row = mysqli_fetch_assoc($logsQuery)) {
     $logsData[(int)$row['month']] = (int)$row['count'];
 }
@@ -19,7 +19,7 @@ while ($row = mysqli_fetch_assoc($notificationsQuery)) {
 
 // User registrations by month
 $usersData = [];
-$usersQuery = mysqli_query($conn, "SELECT MONTH(date_created) AS month, COUNT(*) AS count FROM users GROUP BY MONTH(date_created)");
+$usersQuery = mysqli_query($conn, "SELECT MONTH(created_at) AS month, COUNT(*) AS count FROM users GROUP BY MONTH(created_at)");
 while ($row = mysqli_fetch_assoc($usersQuery)) {
     $usersData[(int)$row['month']] = (int)$row['count'];
 }

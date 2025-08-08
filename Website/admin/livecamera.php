@@ -31,42 +31,9 @@
 <link rel="stylesheet" href="../template/admin/dist/assets/css/style.css" id="main-style-link" >
 <link rel="stylesheet" href="../template/admin/dist/assets/css/style-preset.css" >
 <link href="https://cdn.jsdelivr.net/npm/@tabler/icons@1.77.0/font/css/tabler-icons.min.css" rel="stylesheet">
- <style>
-    #liveCamera {
-      border: 1px solid #ddd;
-      transform: scaleX(-1);
-      position: relative;
-    }
-    #loadingOverlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.5);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      z-index: 9999;
-      display: none;
-    }
-    #loadingOverlay span {
-      color: white;
-      font-size: 20px;
-    }
-    #countdown {
-      position: absolute;
-      top: 10px;
-      right: 10px; /* Move to the right side */
-      background: rgba(0, 255, 0, 0.8);
-      color: white;
-      padding: 10px 20px;
-      border-radius: 10px;
-      font-size: 24px; /* Make it bigger */
-      font-weight: bold;
-      display: none;
-    }
-  </style>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+
+
 </head>
 <!-- [Head] end -->
 <!-- [Body] Start -->
@@ -409,40 +376,190 @@
       <!-- [ Main Content ] start -->
       <div class="row">
         <!-- Start Live Camera Section -->
-        <div class="col-xxl-4">
+        <div class="col-xxl-12">
           <div class="card">
-            <div class="card-header">
-              <h5>Live Camera Face Recognition</h5>
+            <div class="card-header d-flex align-items-center justify-content-between">
+              <h5 class="mb-0">Live Camera Face Recognition</h5>
+
+              <!-- Camera source dropdown -->
+              <select id="cameraSource" class="form-select" style="width: auto;">
+                <option value="builtin" selected>Built-in Camera</option>
+                <option value="esp32">ESP32 Camera</option>
+              </select>
             </div>
-            <div class="card-body pc-component">
-              <!-- Video element for live camera feed -->
-              <img id="liveCamera"
-                  crossorigin="anonymous"
-                  src="http://192.168.0.106/frame.jpg"
-                  class="img-fluid d-block w-100"
-                  style="border: 1px solid #ddd; transform: scaleX(-1);" />
+         <div class="card-body pc-component">
+                  <div class="row align-items-center">
+
+                  <!-- Left Side: Camera -->
+                <div class="col-6 d-flex justify-content-center align-items-center">
+                  <div class="d-flex flex-column align-items-center justify-content-center"
+                      style="background: #ffffff;
+                              border-radius: 10px; 
+                              padding: 10px; 
+                              box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+                              width: 100%;
+                              height: 100%;">
+
+                    <div style="max-width: 320px; width: 100%;">
+                      <!-- Built-in Camera -->
+                      <video id="builtinCamera" autoplay playsinline
+                            style="border: 1px solid #ddd; transform: scaleX(-1); width: 100%; height: auto; display: none;"></video>
+
+                      <!-- ESP32 Camera -->
+                      <img id="esp32Camera"
+                          crossorigin="anonymous"
+                          style="border: 1px solid #ddd; transform: scaleX(-1); width: 100%; height: auto; display: none;" />
+                    </div>
+
+                    <style>
+                      #esp32Camera {
+                            min-height: 200px; 
+                            min-width: 200px;
+                            background-color: #f0f0f0; 
+                            display: block; 
+                          }
+
+                        #builtinCamera {
+                            min-height: 200px; 
+                            min-width: 200px;
+                            background-color: #f0f0f0; 
+                            display: block; 
+                          }
+                    </style>
+
+                    <p class="text-muted mt-2">Ensure your browser has access to the camera.</p>
+                    <canvas id="capturedFrame" class="d-none"></canvas>
+                  </div>
+                </div>
+
+
+                                <!-- Right Side: Countdown, Display, Button -->
+                <div class="col-6 d-flex justify-content-center align-items-center">
+                  <div class="d-flex flex-column justify-content-center align-items-center text-center"
+                      style="background: #ffffff;
+                              border-radius: 10px; 
+                              padding: 20px; 
+                              box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+                              width: 100%;
+                              height: 100%;">
+
+                    <!-- Countdown (hidden until start) -->
+                  <div id="countdown"
+                      style="font-size: 4rem; 
+                            font-weight: bold; 
+                            color: #dc3545; 
+                            text-shadow: 2px 2px 5px rgba(0,0,0,0.5);
+                            margin-bottom: 15px;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            gap: 10px;">
+                    <i class="bi bi-stopwatch" style="font-size: 3rem; color: #6c757d;"></i>
+                    <span id="countdownNumber">5</span>
+                  </div>
+
+
+                  <style>
+                    @keyframes countdownZoom {
+                      0% { transform: scale(1); opacity: 1; }
+                      50% { transform: scale(1.5); opacity: 0.8; }
+                      100% { transform: scale(1); opacity: 1; }
+                    }
+                    #countdown.animate {
+                      animation: countdownZoom 1s ease-in-out;
+                    }
+                  </style>
+
+
+                    <!-- Placeholder before countdown -->
+                    <div id="countdownPlaceholder"
+                        style="font-size: 1.2rem; 
+                              color: #6c757d; 
+                            ">
+                      ⏳ Ready to start face recognition?
+                    </div>
+
+                    <!-- Prediction result -->
+                    <p id="predictionResult" class="mt-3 text-primary" 
+                      style="font-weight: 500;"></p>
+                    <hr style="width: 100%;">
+
+                    <!-- Start button -->
+                    <button id="startButton" class="btn btn-primary btn-lg mt-auto" style="width: 100%;">
+                      🚀 Start Countdown
+                    </button>
+                  </div>
+                </div>
+
+                
+
+              </div>
+            </div>
+
+
 
               <script>
-                const img = document.getElementById('liveCamera');
+                const builtinCamera = document.getElementById('builtinCamera');
+                const esp32Camera = document.getElementById('esp32Camera');
+                const cameraSource = document.getElementById('cameraSource');
 
-                setInterval(() => {
-                  const buffer = new Image();
-                  buffer.crossOrigin = "anonymous";
-                  buffer.onload = () => {
-                    img.src = buffer.src;
-                  };
-                  buffer.src = 'http://192.168.0.106/frame.jpg?t=' + new Date().getTime();
-                }, 100); // Refresh every 200ms
+                const esp32URL = 'http://192.168.0.103/frame.jpg';
+                const refreshRate = 100;
+                let esp32Interval = null;
+                let builtinStream = null;
+
+                async function startBuiltinCamera() {
+                  stopESP32Camera();
+                  try {
+                    builtinStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
+                    builtinCamera.srcObject = builtinStream;
+                    builtinCamera.style.display = 'block';
+                    esp32Camera.style.display = 'none';
+                  } catch (err) {
+                    alert("Error accessing built-in camera: " + err.message);
+                  }
+                }
+
+                function stopBuiltinCamera() {
+                  if (builtinStream) {
+                    builtinStream.getTracks().forEach(track => track.stop());
+                    builtinStream = null;
+                  }
+                  builtinCamera.style.display = 'none';
+                }
+
+                function startESP32Camera() {
+                  stopBuiltinCamera();
+                  esp32Camera.style.display = 'block';
+                  builtinCamera.style.display = 'none';
+                  function updateFrame() {
+                    esp32Camera.src = esp32URL + '?t=' + Date.now();
+                  }
+                  updateFrame();
+                  esp32Interval = setInterval(updateFrame, refreshRate);
+                }
+
+                function stopESP32Camera() {
+                  if (esp32Interval) {
+                    clearInterval(esp32Interval);
+                    esp32Interval = null;
+                  }
+                  esp32Camera.style.display = 'none';
+                }
+
+                // Switch camera source on dropdown change
+                cameraSource.addEventListener('change', () => {
+                  if (cameraSource.value === 'builtin') {
+                    startBuiltinCamera();
+                  } else {
+                    startESP32Camera();
+                  }
+                });
+
+                // Start with Built-in Camera by default
+                startBuiltinCamera();
               </script>
 
-              <p class="text-muted mt-2">Ensure your browser has access to the camera.</p>
-<canvas id="capturedFrame" class="d-none"></canvas>
-<div id="countdown">5</div>
-<p id="predictionResult" class="mt-3 text-center">------------------------------------------------------------------</p>
-<div class="text-center mt-3">
-  <button id="startButton" class="btn btn-primary" style="width: 100%;">Start Countdown</button>
-</div>
-            </div>
           </div>
         </div>
         <!-- End Live Camera Section -->
@@ -451,7 +568,7 @@
       <script>
         async function pollForTrigger() {
           try {
-            const response = await fetch("http://192.168.0.107/shouldStart"); // Replace with actual ESP32 IP
+            const response = await fetch("http://192.168.0.101/shouldStart"); // Replace with actual ESP32 IP
             const text = await response.text();
             if (text === "1") {
               document.getElementById("startButton").click();
@@ -480,10 +597,11 @@ startButton.addEventListener('click', () => {
     startCountdown();
 });
 
+const countdownNumber = document.getElementById('countdownNumber');
+
 function startCountdown() {
     let countdown = 5;
-    countdownDisplay.style.display = 'block';
-    countdownDisplay.textContent = countdown;
+    countdownNumber.textContent = countdown;
 
     startButton.disabled = true;
     startButton.classList.remove('btn-primary');
@@ -491,162 +609,260 @@ function startCountdown() {
 
     const countdownInterval = setInterval(() => {
         countdown--;
-        countdownDisplay.textContent = countdown;
+        countdownNumber.textContent = countdown;
+
+        countdownNumber.classList.remove('animate');
+        void countdownNumber.offsetWidth;
+        countdownNumber.classList.add('animate');
 
         if (countdown === 0) {
             clearInterval(countdownInterval);
-            countdownDisplay.style.display = 'none';
+
+            // Show result
+            predictionResult.textContent = "✅ Face recognized!"; // Example
+            predictionResult.style.color = "green";
+
+            // After showing result, reset countdown to "#"
+            setTimeout(() => {
+                countdownNumber.textContent = "#";
+                startButton.disabled = false;
+                startButton.classList.remove('btn-secondary');
+                startButton.classList.add('btn-primary');
+            }, 1500); // Delay so user sees result before reset
+
             captureFrame();
         }
     }, 1000);
 }
 
+   function fetchRelay() {
+                    fetch('http://192.168.0.101/open')
+                        .then(response => response.text())
+                        .then(data => {
+                            console.log('ESP32 response:', data);
+                            if (data !== 'Relay activated') {
+                                fetchRelay(); 
+                            }
+                        })
+                        .catch(() => setTimeout(fetchRelay, 10000));
+                }
+
+       function sendRemainingSeconds(remainingSeconds) {
+                    fetch("http://192.168.0.101/setRemainingSeconds", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ remainingSeconds: remainingSeconds })
+                    })
+                    .then(res => res.text())
+                    .then(response => console.log("Server response:", response))
+                    .catch(() => setTimeout(sendRemainingSeconds, 10000));
+                }
+
+   let deniedBeepSent = false;
+    function sendDeniedBeep() {
+      if (deniedBeepSent) return;  // Prevent multiple calls
+
+      deniedBeepSent = true;
+
+      fetch("http://192.168.0.101/deniedBeep")
+        .then(res => res.text())
+        .then(response => {
+          console.log("Denied beep response:", response);
+        })
+        .catch(error => {
+          console.error("Denied beep fetch error:", error);
+        });
+    }
+
+
+async function waitForImageLoadWithStatus(imgElement, timeout = 5000) {
+  return new Promise((resolve, reject) => {
+    let settled = false; // Flag to track if already resolved/rejected
+
+    if (imgElement.complete && imgElement.naturalWidth > 0) {
+      resolve();
+      return;
+    }
+
+    predictionResult.textContent = 'Getting the image...';
+
+    const downloadingTimeout = setTimeout(() => {
+      if (!settled) {
+        predictionResult.textContent = 'Downloading the image...';
+      }
+    }, 500);
+
+    const timer = setTimeout(() => {
+      if (!settled) {
+        settled = true;
+        imgElement.onload = null;
+        imgElement.onerror = null;
+        clearTimeout(downloadingTimeout);
+        predictionResult.textContent = 'Status: Image load timeout. Restarting...';
+        reject(new Error('Image load timeout'));
+      }
+    }, timeout);
+
+    imgElement.onload = () => {
+      if (!settled) {
+        settled = true;
+        clearTimeout(timer);
+        clearTimeout(downloadingTimeout);
+        // Don't set success text here, let caller handle it
+        resolve();
+      }
+    };
+
+    imgElement.onerror = () => {
+      if (!settled) {
+        settled = true;
+        clearTimeout(timer);
+        clearTimeout(downloadingTimeout);
+        predictionResult.textContent = 'Status: Failed to load image. Restarting...';
+        reject(new Error('Image failed to load'));
+      }
+    };
+  });
+}
+
+
+
 async function captureFrame() {
-    predictionResult.textContent = 'Scanning...';
+   
 
+   // Detect which camera feed is active
+  const camElement = builtinCamera.style.display !== 'none' ? builtinCamera : esp32Camera;
+
+  // Check if feed is ready
+  const isVideoReady = camElement.tagName === 'VIDEO' && camElement.readyState >= 2;
+  const isImageReady = camElement.tagName === 'IMG' && camElement.complete && camElement.naturalWidth > 0;
+
+  if (!isVideoReady && camElement.tagName === 'IMG' && !isImageReady) {
     try {
-        // Set canvas to image dimensions (same size as the live camera image)
-        canvas.width = videoElement.naturalWidth || videoElement.width;
-        canvas.height = videoElement.naturalHeight || videoElement.height;
+      await waitForImageLoadWithStatus(camElement);
+    } catch (error) {
+      console.warn('Image load failed, restarting captureFrame...');
+      // Wait a bit before retrying to avoid tight loop
+      await new Promise(r => setTimeout(r, 1000));
+      return captureFrame(); // Retry recursively
+    }
+  } else if (!isVideoReady && !isImageReady) {
+    predictionResult.textContent = 'Status: Camera Is Not Ready';
+    console.warn('Camera not ready for capture.');
+    resetButton();
+    return;
+  }
 
-        // Draw current frame from the <img> tag onto canvas (this is your live image)
-        context.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
+   predictionResult.textContent = 'Scanning...';
 
-        // Convert to base64 JPEG
-        const imageData = canvas.toDataURL('image/jpeg');
+  try {
+    // Set canvas dimensions to match the camera feed
+    canvas.width = camElement.videoWidth || camElement.naturalWidth;
+    canvas.height = camElement.videoHeight || camElement.naturalHeight;
 
-        const response = await fetch('../backend/process_faceframe.php', {
+    // Draw the current frame onto the canvas
+    context.drawImage(camElement, 0, 0, canvas.width, canvas.height);
+
+    // Convert frame to Base64 JPEG
+    const imageData = canvas.toDataURL('image/jpeg');
+
+    // Send frame to backend
+    const response = await fetch('../backend/process_faceframe.php', {
+        method: 'POST',
+        body: JSON.stringify({ image: imageData }),
+        headers: { 'Content-Type': 'application/json' }
+    });
+
+    const data = await response.json();
+
+    // Show entire data object for debugging
+    console.log('Face frame response data:', data);
+    predictionResult.innerHTML = `<pre>${JSON.stringify(data, null, 2)}</pre>`;
+
+    if (!data.prediction || data.prediction.length === 0) {
+        predictionResult.innerHTML = `
+               <strong>Status:</strong> Access Denied ❌
+            `;
+            // <br>
+        sendDeniedBeep();
+        resetButton();
+        return;
+    }
+
+    const result = data.prediction[0];
+    const label = result.label;
+    const confidence = result.confidence.toFixed(2);
+
+    if (label.toLowerCase() !== 'unauthorized') {
+        const scheduleResponse = await fetch('../backend/check_schedule.php', {
             method: 'POST',
-            body: JSON.stringify({ image: imageData }),
-            headers: {
-                'Content-Type': 'application/json',
-            },
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name: label }),
         });
 
-        const data = await response.json();
+        const scheduleData = await scheduleResponse.json();
 
-        if (data.prediction && data.prediction.length > 0) {
-              const result = data.prediction[0];
-              const label = result.label;
-              const confidence = result.confidence.toFixed(2);
+        // Log and display schedule data for debugging
+        console.log('Schedule check response:', scheduleData);
+        predictionResult.innerHTML = `<pre>${JSON.stringify(scheduleData, null, 2)}</pre>`;
 
-              if (label.toLowerCase() !== 'unauthorized') {
-                  const scheduleResponse = await fetch('../backend/check_schedule.php', {
-                      method: 'POST',
-                      headers: {
-                          'Content-Type': 'application/json',
-                      },
-                      body: JSON.stringify({ name: label }),
-                  });
+        if (scheduleData.status === 'granted') {
+            const now = new Date();
+            const endTimeStr = scheduleData.time.split(' - ')[1]; // "08:30 PM"
 
-                  const scheduleData = await scheduleResponse.json();
+            const [endHourMin, period] = endTimeStr.split(' ');
+            let [endHour, endMin] = endHourMin.split(':').map(Number);
 
-                if (scheduleData.status === 'granted') {
-                      const now = new Date();
-                          const endTimeStr = scheduleData.time.split(' - ')[1]; // "08:30 PM"
+            if (period === 'PM' && endHour !== 12) endHour += 12;
+            if (period === 'AM' && endHour === 12) endHour = 0;
 
-                          const [endHourMin, period] = endTimeStr.split(' ');
-                          let [endHour, endMin] = endHourMin.split(':').map(Number);
+            const endTime = new Date(now);
+            endTime.setHours(endHour, endMin, 0, 0);
 
-                          if (period === 'PM' && endHour !== 12) endHour += 12;
-                          if (period === 'AM' && endHour === 12) endHour = 0;
+            const diffMs = endTime - now;
+            const remainingSeconds = diffMs > 0 ? Math.floor(diffMs / 1000) : 0;
 
-                          const endTime = new Date(now);
-                          endTime.setHours(endHour, endMin, 0, 0);
+            sendRemainingSeconds(remainingSeconds);
 
-                          const diffMs = endTime - now;
-                          const remainingSeconds = diffMs > 0 ? Math.floor(diffMs / 1000) : 0;
+            predictionResult.innerHTML = `
+                <strong>Status:</strong> Access Granted ✅<br>
+            
+            `;
 
-                          // Send to ESP32
-                       function sendRemainingSeconds() {
-                          fetch("http://192.168.0.107/setRemainingSeconds", {
-                            method: "POST",
-                            headers: { "Content-Type": "application/json" },
-                            body: JSON.stringify({ remainingSeconds: remainingSeconds })
-                          })
-                          .then(res => res.text())
-                          .then(response => {
-                            console.log("Server response:", response);
-                          })
-                          .catch(err => {
-                            // Retry after 100 ms
-                            setTimeout(sendRemainingSeconds, 100);
-                          });
-                        }
+                // <strong>Faculty:</strong> ${label}<br>
+                // <strong>Confidence:</strong> ${confidence}<br>
+                // <strong>Room:</strong> ${scheduleData.room}<br>
+                // <strong>Time:</strong> ${scheduleData.time}<br>
 
-                        // Call the function initially
-                        sendRemainingSeconds();
+            fetchRelay();
 
-                    
-                          predictionResult.innerHTML = `
-                              <strong>Status:</strong> Access Granted ✅<br>
-                              <strong>Faculty:</strong> ${label}<br>
-                              <strong>Room:</strong> ${scheduleData.room}<br>
-                              <strong>Time:</strong> ${scheduleData.time}<br>
-                          `;
+        } else {
+            predictionResult.innerHTML = `
+                <strong>Status:</strong> Access Denied ❌<br> 
+               
+            `;
 
-                     
+            //  <em>error 2: Schedule not granted</em><br>
+            //     <em>Message: ${scheduleData.message || 'No message'}</em>
+            sendDeniedBeep();
+        }
 
-                        // Function to activate the relay
-                        function fetchRelay() {
-                            fetch('http://192.168.0.107/open')
-                                .then(response => response.text())
-                                .then(data => {
-                                    console.log('ESP32 response:', data);
-                                    if (data === 'Relay activated') {
-                                        console.log('Relay activated successfully!');
-                                    } else {
-                                        console.log('Relay activation failed, retrying...');
-                                        fetchRelay(); // Retry if the response is not successful
-                                    }
-                                })
-                                .catch(error => {
-                                    console.error('ESP32 request failed:', error);
-                               
-                                    setTimeout(fetchRelay, 100);
-                                });
-                        }
+    } else {
+        predictionResult.innerHTML = `<strong>Status:</strong> Access Denied ❌`;
 
-                      
-
-                        // Trigger relay to be activated
-                        fetchRelay();
-                    } else {
-                      predictionResult.innerHTML = `
-                          <strong>Status:</strong> Access Denied ❌<br>
-                          <strong>Faculty:</strong> ${label}<br>
-                          <strong>Confidence:</strong> ${confidence}<br>
-                          <em>${scheduleData.message}</em>
-                      `;
-
-                      fetch("http://192.168.0.107/deniedBeep")
-                      .then(response => response.text())
-                      .then(console.log)
-                      .catch(console.error);
-                  }
-              } else {
-                  predictionResult.innerHTML = `<strong>Status:</strong> Access Denied ❌<br><em>Unauthorized individual.</em>`;
-                   fetch("http://192.168.0.107/deniedBeep")
-                      .then(response => response.text())
-                      .then(console.log)
-                      .catch(console.error);
-              }
-          } else {
-              predictionResult.textContent = 'No prediction results.';
-               fetch("http://192.168.0.107/deniedBeep")
-                      .then(response => response.text())
-                      .then(console.log)
-                      .catch(console.error);
-          }
-
-    } catch (error) {
-        console.error('Error:', error);
-        predictionResult.textContent = 'Error processing the frame.';
-        fetch("http://192.168.0.107/deniedBeep")
-                      .then(response => response.text())
-                      .then(console.log)
-                      .catch(console.error);
+        // <br>
+        //   <em>error 3: Unauthorized individual</em>
+        sendDeniedBeep();
     }
+
+} catch (error) {
+    console.error('Error in captureFrame:', error);
+    predictionResult.innerHTML = `<strong>Status:</strong> Access Denied ❌`;
+    // <br>
+    // <em>error 4: ${error.message || error}</em>
+    sendDeniedBeep();
+}
+
 
     resetButton();
 }

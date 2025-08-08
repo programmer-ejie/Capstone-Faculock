@@ -3,11 +3,17 @@
 #include <WebServer.h>
 
 // Wi-Fi credentials
-// const char* ssid = "Gaviola wifi";
-// const char* password = "gaviola2024";
+// const char* ssid = "Yepes_Wifi_Wi-Fi5";
+// const char* password = "haroldflint@@";
 
-const char* ssid = "Florida-Fi 📶";
-const char* password = "florida$$$";
+// const char* ssid = "Florida-Fi 📶";
+// const char* password = "florida$$$";
+
+//const char* ssid = "Aiz";
+//const char* password = "zzzzzzzz";
+
+const char* ssid = "Gaviola wifi";
+const char* password = "gaviola2024";
 
 // AI Thinker ESP32-CAM pin definitions
 #define PWDN_GPIO_NUM     32
@@ -29,13 +35,13 @@ const char* password = "florida$$$";
 
 WebServer server(80);
 
-// Serve a single frame JPEG (for both frame.jpg and capture)
-void serveFrame() {
+// Single-frame JPEG capture
+void handleFrame() {
   camera_fb_t *fb = esp_camera_fb_get();
 
   if (!fb) {
     server.send(500, "text/plain", "Camera capture failed");
-    Serial.println("Capture failed in /frame endpoint.");
+    Serial.println("Capture failed in /frame.jpg endpoint.");
     return;
   }
 
@@ -45,9 +51,6 @@ void serveFrame() {
   esp_camera_fb_return(fb);
   Serial.println("Sent one frame.");
 }
-
-// Handle continuous stream (MJPEG) if you want (optional)
-// For now, you have only single-frame endpoints.
 
 void startCamera() {
   camera_config_t config;
@@ -104,16 +107,10 @@ void setup() {
   Serial.print("📸 Frame endpoint at: http://");
   Serial.print(WiFi.localIP());
   Serial.println("/frame.jpg");
-  Serial.print("📸 Capture endpoint at: http://");
-  Serial.print(WiFi.localIP());
-  Serial.println("/capture");
 
   startCamera();
 
-  // Both endpoints serve a single fresh frame on each request
-  server.on("/frame.jpg", HTTP_GET, serveFrame);
-  server.on("/capture", HTTP_GET, serveFrame);
-
+  server.on("/frame.jpg", HTTP_GET, handleFrame);
   server.begin();
 }
 

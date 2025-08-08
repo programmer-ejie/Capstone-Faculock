@@ -1,0 +1,39 @@
+#include <WiFi.h>
+
+// Wi-Fi credentials
+//const char* ssid = "Demo";
+//const char* password = "ejieflorida";
+
+//const char* ssid = "TUL ED PISO WIFI";
+//const char* password = "";
+
+// const char* ssid = "Florida-Fi 📶";
+// const char* password = "florida$$$";
+
+const char* ssid = "Gaviola 5g";
+const char* password = "gaviola2024";
+
+void setup() {
+  // Start the Serial Monitor
+  Serial.begin(115200);
+  Serial.println("Starting WiFi connection...");
+
+  // Connect to Wi-Fi
+  WiFi.begin(ssid, password);
+  Serial.print("Connecting to WiFi");
+
+  // Wait until connected
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(500);
+    Serial.print(".");
+  }
+
+  // Print the IP address once connected
+  Serial.println("\n✅ WiFi connected!");
+  Serial.print("ESP32-CAM IP Address: ");
+  Serial.println(WiFi.localIP());
+}
+
+void loop() {
+  // Nothing to do here
+}

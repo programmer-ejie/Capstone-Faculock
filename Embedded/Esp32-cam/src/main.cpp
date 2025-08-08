@@ -3,9 +3,6 @@
 #include <WebServer.h>
 
 // Wi-Fi credentials
-// const char* ssid = "Gaviola wifi";
-// const char* password = "gaviola2024";
-
 const char* ssid = "Florida-Fi 📶";
 const char* password = "florida$$$";
 
@@ -29,7 +26,7 @@ const char* password = "florida$$$";
 
 WebServer server(80);
 
-// Serve a single frame JPEG (for both frame.jpg and capture)
+// Serve a single JPEG frame (for /frame.jpg)
 void serveFrame() {
   camera_fb_t *fb = esp_camera_fb_get();
 
@@ -46,8 +43,37 @@ void serveFrame() {
   Serial.println("Sent one frame.");
 }
 
-// Handle continuous stream (MJPEG) if you want (optional)
-// For now, you have only single-frame endpoints.
+// Serve continuous MJPEG stream at /stream
+void handleStream() {
+  WiFiClient client = server.client();
+
+  String response = "HTTP/1.1 200 OK\r\n";
+  response += "Content-Type: multipart/x-mixed-replace; boundary=frame\r\n\r\n";
+  server.sendContent(response);
+
+  while (client.connected()) {
+    camera_fb_t *fb = esp_camera_fb_get();
+    if (!fb) {
+      Serial.println("Camera capture failed in stream");
+      break;
+    }
+
+    response = "--frame\r\n";
+    response += "Content-Type: image/jpeg\r\n";
+    response += "Content-Length: " + String(fb->len) + "\r\n\r\n";
+
+    server.sendContent(response);
+    client.write(fb->buf, fb->len);
+    server.sendContent("\r\n");
+
+    esp_camera_fb_return(fb);
+
+    // Frame delay (adjust for FPS)
+    delay(100);  // ~10 FPS
+  }
+
+  Serial.println("Client disconnected from stream");
+}
 
 void startCamera() {
   camera_config_t config;
@@ -104,15 +130,15 @@ void setup() {
   Serial.print("📸 Frame endpoint at: http://");
   Serial.print(WiFi.localIP());
   Serial.println("/frame.jpg");
-  Serial.print("📸 Capture endpoint at: http://");
+  Serial.print("📸 Stream endpoint at: http://");
   Serial.print(WiFi.localIP());
-  Serial.println("/capture");
+  Serial.println("/stream");
 
   startCamera();
 
-  // Both endpoints serve a single fresh frame on each request
+  // Register endpoints
   server.on("/frame.jpg", HTTP_GET, serveFrame);
-  server.on("/capture", HTTP_GET, serveFrame);
+  server.on("/stream", HTTP_GET, handleStream);
 
   server.begin();
 }

@@ -593,8 +593,22 @@ const predictionResult = document.getElementById('predictionResult');
 const startButton = document.getElementById('startButton');
 const countdownDisplay = document.getElementById('countdown');
 
+   function processDisplay() {
+                    fetch('http://192.168.0.101/processDisplay')
+                        .then(response => response.text())
+                        .then(data => {
+                            console.log('ESP32 response:', data);
+                            if (data !== 'process display') {
+                                processDisplay(); 
+                            }
+                        })
+                        .catch(() => setTimeout(processDisplay, 10000));
+                }
+
 startButton.addEventListener('click', () => {
+   
     startCountdown();
+     processDisplay();
 });
 
 const countdownNumber = document.getElementById('countdownNumber');
@@ -621,6 +635,7 @@ function startCountdown() {
             // Show result
             predictionResult.textContent = "✅ Face recognized!"; // Example
             predictionResult.style.color = "green";
+            
 
             // After showing result, reset countdown to "#"
             setTimeout(() => {
@@ -658,21 +673,31 @@ function startCountdown() {
                     .catch(() => setTimeout(sendRemainingSeconds, 10000));
                 }
 
-   let deniedBeepSent = false;
-    function sendDeniedBeep() {
-      if (deniedBeepSent) return;  // Prevent multiple calls
+  let deniedBeepSent = false;
 
-      deniedBeepSent = true;
+  function sendDeniedBeep() {
+    if (deniedBeepSent) return;  // Prevent multiple calls too fast
 
-      fetch("http://192.168.0.101/deniedBeep")
-        .then(res => res.text())
-        .then(response => {
-          console.log("Denied beep response:", response);
-        })
-        .catch(error => {
-          console.error("Denied beep fetch error:", error);
-        });
-    }
+    deniedBeepSent = true;
+
+    fetch("http://192.168.0.101/deniedBeep")
+      .then(res => res.text())
+      .then(response => {
+        console.log("Denied beep response:", response);
+
+        // Reset the flag after 3 seconds to allow future denied beep calls
+        setTimeout(() => {
+          deniedBeepSent = false;
+        }, 3000);
+      })
+      .catch(error => {
+        console.error("Denied beep fetch error:", error);
+        
+        // Reset the flag on error to allow retrying
+        deniedBeepSent = false;
+      });
+  }
+
 
 
 async function waitForImageLoadWithStatus(imgElement, timeout = 5000) {
@@ -781,7 +806,7 @@ async function captureFrame() {
 
     if (!data.prediction || data.prediction.length === 0) {
         predictionResult.innerHTML = `
-               <strong>Status:</strong> Access Denied ❌
+               <strong>Status:</strong> Access Denied wew❌
             `;
             // <br>
         sendDeniedBeep();

@@ -18,10 +18,18 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
     mysqli_query($conn, $sql);
 
     if (mysqli_affected_rows($conn) > 0) {
-        header("Location: ../admin/schedules.php?editStatus=success");
+       $filter_department = isset($_POST['filter_department']) ? $_POST['filter_department'] : '';
+        $sort_date = isset($_POST['sort_date']) ? $_POST['sort_date'] : '';
+        $page = isset($_POST['page']) ? $_POST['page'] : 1;
+        $query = "editStatus=success&filter_department=$filter_department&sort_date=$sort_date&page=$page";
+        header("Location: ../admin/schedules.php?$query");
         exit;
     } else {
-        header("Location: ../admin/schedules.php?editStatus=fail");
+        $filter_department = isset($_POST['filter_department']) ? $_POST['filter_department'] : '';
+        $sort_date = isset($_POST['sort_date']) ? $_POST['sort_date'] : '';
+        $page = isset($_POST['page']) ? $_POST['page'] : 1;
+        $query = "editStatus=fail&filter_department=$filter_department&sort_date=$sort_date&page=$page";
+        header("Location: ../admin/schedules.php?$query");
         exit;
     }
 } else {

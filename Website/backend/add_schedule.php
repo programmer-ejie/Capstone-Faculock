@@ -31,15 +31,27 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                 VALUES ('$course_code', '$course_number', '$units', '$faculty_teacher', '$subject_name', '$size', '$schedule', '$department', '$college')";
 
         if (mysqli_query($conn, $sql)) {
-            header("Location: ../admin/schedules.php?addStatus=success");
+            $filter_department = isset($_POST['filter_department']) ? $_POST['filter_department'] : '';
+            $sort_date = isset($_POST['sort_date']) ? $_POST['sort_date'] : '';
+            $page = isset($_POST['page']) ? $_POST['page'] : 1;
+            $query = "addStatus=success&filter_department=$filter_department&sort_date=$sort_date&page=$page";
+            header("Location: ../admin/schedules.php?$query");
             exit;
         } else {
-            header("Location: ../admin/schedules.php?addStatus=fail");
+            $filter_department = isset($_POST['filter_department']) ? $_POST['filter_department'] : '';
+            $sort_date = isset($_POST['sort_date']) ? $_POST['sort_date'] : '';
+            $page = isset($_POST['page']) ? $_POST['page'] : 1;
+            $query = "addStatus=fail&filter_department=$filter_department&sort_date=$sort_date&page=$page";
+            header("Location: ../admin/schedules.php?$query");
             exit;
         }
     } else {
         // Redirect to schedules.php with uncompleteData status
-        header("Location: ../admin/schedules.php?addStatus=uncompleteData");
+      $filter_department = isset($_POST['filter_department']) ? $_POST['filter_department'] : '';
+        $sort_date = isset($_POST['sort_date']) ? $_POST['sort_date'] : '';
+        $page = isset($_POST['page']) ? $_POST['page'] : 1;
+        $query = "addStatus=uncompleteData&filter_department=$filter_department&sort_date=$sort_date&page=$page";
+        header("Location: ../admin/schedules.php?$query");
         exit;
     }
 } else {

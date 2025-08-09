@@ -46,12 +46,11 @@
  <!-- [ Sidebar Menu ] start -->
 <nav class="pc-sidebar">
   <div class="navbar-wrapper">
-    <div class="m-header">
-    <a href="index.html" class="logo d-flex align-items-center me-auto" style="text-decoration: none;">
-        <i class="fas fa-lock me-2" style="font-size: 15px;"></i>
-        <span class="sitename" style="font-weight: bolder; font-size: 16px; color: grey; padding-right: 10px;">Faculock</span>
-        </a>
-
+     <div class="m-header">
+      <a href="livecamera.php" class="logo d-flex align-items-center me-auto" style="text-decoration: none;">
+        <img src="../template/admin/dist/assets/images/web_logo.png" alt="Faculock Logo" style="height: 30px; margin-right: 8px;">
+        <span style = "font-size: 16px; font-weight: bolder; color: grey;" ><strong> | </strong> FacuLock System</span><hr>
+      </a>
     </div>
     <div class="navbar-content">
       <ul class="pc-navbar">
@@ -602,20 +601,31 @@ function filterByStatus() {
     </div>
   </div>
   <!-- [ Main Content ] end -->
-  <footer class="pc-footer">
-    <div class="footer-wrapper container-fluid">
-      <div class="row">
-        <div class="col-sm my-1">
-        <p class="m-0"
-            >Capstone Proect &#9829; By IT301 6 Students</p
-          >
-        </div>
-        <div class="col-auto my-1">
-        
-        </div>
+    <footer class="pc-footer" style=" padding: 15px 0;">
+  <div class="footer-wrapper container-fluid">
+    <div class="row align-items-center text-center text-sm-start">
+      
+      <!-- Left side: Logo and branding -->
+      <div class="col-sm d-flex align-items-center justify-content-center justify-content-sm-start mb-2 mb-sm-0" style="gap: 10px;">
+        <img src="../template/admin/dist/assets/images/web_logo.png" alt="SLSU Logo" style="height: 26px; width: 26px; object-fit: contain;">
+        <img src="../template/admin/dist/assets/images/it.jpg" alt="IT Logo" style="height: 26px; width: 26px; object-fit: cover; border-radius: 50%;">
+        <span class="fw-bold" style="font-size: 0.95rem;">SLSU - Tomas Oppus</span>
       </div>
+
+      <!-- Center: Divider -->
+      <div class="col-sm-auto d-none d-sm-flex justify-content-center">
+        <span style="color: #777;">|</span>
+      </div>
+
+      <!-- Right side: Info -->
+      <div class="col-sm d-flex flex-column flex-sm-row align-items-center justify-content-center justify-content-sm-end" style="gap: 8px;">
+       <span>&copy; <?php echo date('Y'); ?> - Capstone Project @ 2025</span>
+        <span class="text-muted" style="font-size: 0.9rem;">Republic Act 10931</span>
+      </div>
+      
     </div>
-  </footer>
+  </div>
+</footer>
 
   <!-- [Page Specific JS] start -->
   <script src="../template/admin/dist/assets/js/plugins/apexcharts.min.js"></script>

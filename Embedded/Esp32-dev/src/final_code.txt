@@ -8,7 +8,7 @@
 const char* ssid = "Florida-Fi 📶";
 const char* password = "florida$$$";
 
-#define STREAM_URL "http://192.168.0.103/stream"  // change to your ESP32-CAM stream URL
+#define STREAM_URL "http://192.168.0.106/stream"  // change to your ESP32-CAM stream URL
 
 #define RELAY_PIN 12
 #define BUTTON_PIN 13
@@ -181,13 +181,34 @@ void displayProcessingScreen() {
 
 // Connect to WiFi
 void connectWiFi() {
+  tft.fillScreen(TFT_BLACK);
+  tft.setTextColor(TFT_WHITE, TFT_BLACK);
+  tft.setTextSize(2);
+
+  tft.setCursor(10, tft.height() / 2 - 10);
+  tft.println("Connecting to WiFi...");
+
   Serial.print("Connecting to WiFi...");
   WiFi.begin(ssid, password);
+
   while (WiFi.status() != WL_CONNECTED) {
     delay(500);
     Serial.print(".");
   }
+
+  tft.fillScreen(TFT_BLACK);
+  tft.setCursor(10, tft.height() / 2 - 10);
+  tft.setTextColor(TFT_GREEN, TFT_BLACK);
+  tft.println("WiFi Connected!");
+  
+  tft.setTextSize(1);
+  tft.setCursor(10, tft.height() / 2 + 15);
+  tft.setTextColor(TFT_YELLOW, TFT_BLACK);
+  tft.println(WiFi.localIP().toString());
+
   Serial.println("\nWiFi connected: " + WiFi.localIP().toString());
+
+  delay(1000);
 }
 
 // Fetch and display MJPEG stream frames

@@ -17,7 +17,7 @@
 
 
   <!-- [Favicon] icon -->
-  <link rel="shortcut icon" type="image/png" href="../template/auth/assets/images/logos/seodashlogo.png" />
+  <link rel="shortcut icon" type="image/png" href="../template/admin/dist/assets/images/web_logo.png" />
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700&display=swap" id="main-font-link">
 <!-- [Tabler Icons] https://tablericons.com -->
 <link rel="stylesheet" href="../template/admin/dist/assets/fonts/tabler-icons.min.css" >
@@ -49,13 +49,13 @@
  <!-- [ Sidebar Menu ] start -->
 <nav class="pc-sidebar">
   <div class="navbar-wrapper">
-    <div class="m-header">
-    <a href="index.html" class="logo d-flex align-items-center me-auto" style="text-decoration: none;">
-        <i class="fas fa-lock me-2" style="font-size: 15px;"></i>
-        <span class="sitename" style="font-weight: bolder; font-size: 16px; color: grey; padding-right: 10px;">Faculock</span>
-        </a>
-
+  <div class="m-header">
+      <a href="livecamera.php" class="logo d-flex align-items-center me-auto" style="text-decoration: none;">
+        <img src="../template/admin/dist/assets/images/web_logo.png" alt="Faculock Logo" style="height: 30px; margin-right: 8px;">
+        <span style = "font-size: 16px; font-weight: bolder; color: grey;" ><strong> | </strong> FacuLock System</span><hr>
+      </a>
     </div>
+
     <div class="navbar-content">
       <ul class="pc-navbar">
         
@@ -138,16 +138,7 @@
       </a>
     </li>
     <li class="dropdown pc-h-item d-inline-flex d-md-none">
-      <a
-        class="pc-head-link dropdown-toggle arrow-none m-0"
-        data-bs-toggle="dropdown"
-        href="#"
-        role="button"
-        aria-haspopup="false"
-        aria-expanded="false"
-      >
-        <i class="ti ti-search"></i>
-      </a>
+    
       <div class="dropdown-menu pc-h-dropdown drp-search">
         <form class="px-3">
           <div class="form-group mb-0 d-flex align-items-center">
@@ -158,10 +149,7 @@
       </div>
     </li>
     <li class="pc-h-item d-none d-md-inline-flex">
-      <form class="header-search">
-        <i data-feather="search" class="icon-search"></i>
-        <input type="search" class="form-control" placeholder="Search here. . .">
-      </form>
+     
     </li>
   </ul>
 </div>
@@ -253,14 +241,14 @@
         data-bs-auto-close="outside"
         aria-expanded="false"
       >
-        <img src="../images/admin.webp" alt="user-image" class="user-avtar">
+        <img src="../template/admin/dist/assets/images/it.jpg" alt="user-image" class="user-avtar">
         <span>Administrator</span>
       </a>
       <div class="dropdown-menu dropdown-user-profile dropdown-menu-end pc-h-dropdown">
         <div class="dropdown-header">
           <div class="d-flex mb-1">
             <div class="flex-shrink-0">
-              <img src="../images/admin.webp" alt="user-image" class="user-avtar wid-35">
+              <img src="../template/admin/dist/assets/images/it.jpg" alt="user-image" class="user-avtar wid-35">
             </div>
             <div class="flex-grow-1 ms-3">
               <h6 class="mb-1">Administrator</h6>
@@ -376,134 +364,97 @@
       <!-- [ Main Content ] start -->
       <div class="row">
         <!-- Start Live Camera Section -->
-        <div class="col-xxl-12">
-          <div class="card">
-            <div class="card-header d-flex align-items-center justify-content-between">
-              <h5 class="mb-0">Live Camera Face Recognition</h5>
+       <div class="col-12">
+            <div class="card">
+              <div class="card-header d-flex flex-wrap align-items-center justify-content-between">
+                <h5 class="mb-2 mb-md-0">Live Camera Face Recognition</h5>
 
-              <!-- Camera source dropdown -->
-              <select id="cameraSource" class="form-select" style="width: auto;">
-                <option value="builtin" selected>Built-in Camera</option>
-                <option value="esp32">ESP32 Camera</option>
-              </select>
-            </div>
-         <div class="card-body pc-component">
-                  <div class="row align-items-center">
+                <!-- Camera source dropdown -->
+                <select id="cameraSource" class="form-select w-auto">
+                  <option value="builtin" selected>Built-in Camera</option>
+                  <option value="esp32">ESP32 Camera</option>
+                </select>
+              </div>
+
+              <div class="card-body">
+                <div class="row g-3 align-items-stretch">
 
                   <!-- Left Side: Camera -->
-                <div class="col-6 d-flex justify-content-center align-items-center">
-                  <div class="d-flex flex-column align-items-center justify-content-center"
-                      style="background: #ffffff;
-                              border-radius: 10px; 
-                              padding: 10px; 
-                              box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-                              width: 100%;
-                              height: 100%;">
+                  <div class="col-12 col-md-6 d-flex justify-content-center align-items-center ">
+                    <div class="d-flex flex-column align-items-center justify-content-center w-100 h-100 p-3 " style = "border-radius: 10px; box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);">
+                      <div style="max-width: 100%; width: 100%;">
+                        <!-- Built-in Camera -->
+                        <video id="builtinCamera" autoplay playsinline
+                          style="border: 1px solid #ddd; transform: scaleX(-1); width: 100%; height: auto; display: none;"></video>
 
-                    <div style="max-width: 320px; width: 100%;">
-                      <!-- Built-in Camera -->
-                      <video id="builtinCamera" autoplay playsinline
-                            style="border: 1px solid #ddd; transform: scaleX(-1); width: 100%; height: auto; display: none;"></video>
-
-                      <!-- ESP32 Camera -->
-                      <img id="esp32Camera"
+                        <!-- ESP32 Camera -->
+                        <img id="esp32Camera"
                           crossorigin="anonymous"
                           style="border: 1px solid #ddd; transform: scaleX(-1); width: 100%; height: auto; display: none;" />
+                      </div>
+
+                      <p class="text-muted mt-2 text-center small">Ensure your browser has access to the camera.</p>
+                      <canvas id="capturedFrame" class="d-none"></canvas>
+                    </div>
+                  </div>
+
+                  <!-- Right Side: Countdown, Display, Button -->
+                <div class="col-12 col-md-6">
+                  <div class="d-flex flex-column justify-content-center align-items-center text-center w-100 h-100 p-4 " style="min-height: 100%; border-radius: 10px; box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);">
+
+                    <!-- Countdown -->
+                    <div id="countdown"
+                      style="font-size: 4rem; font-weight: bold; color: #dc3545; 
+                      text-shadow: 2px 2px 5px rgba(0,0,0,0.5);
+                      margin-bottom: 15px; display: flex; align-items: center; justify-content: center; gap: 10px;">
+                      <i class="bi bi-stopwatch" style="font-size: 3rem; color: #6c757d;"></i>
+                      <span id="countdownNumber">5</span>
                     </div>
 
-                    <style>
-                      #esp32Camera {
-                            min-height: 200px; 
-                            min-width: 200px;
-                            background-color: #f0f0f0; 
-                            display: block; 
-                          }
-
-                        #builtinCamera {
-                            min-height: 200px; 
-                            min-width: 200px;
-                            background-color: #f0f0f0; 
-                            display: block; 
-                          }
-                    </style>
-
-                    <p class="text-muted mt-2">Ensure your browser has access to the camera.</p>
-                    <canvas id="capturedFrame" class="d-none"></canvas>
-                  </div>
-                </div>
-
-
-                                <!-- Right Side: Countdown, Display, Button -->
-                <div class="col-6 d-flex justify-content-center align-items-center">
-                  <div class="d-flex flex-column justify-content-center align-items-center text-center"
-                      style="background: #ffffff;
-                              border-radius: 10px; 
-                              padding: 20px; 
-                              box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-                              width: 100%;
-                              height: 100%;">
-
-                    <!-- Countdown (hidden until start) -->
-                  <div id="countdown"
-                      style="font-size: 4rem; 
-                            font-weight: bold; 
-                            color: #dc3545; 
-                            text-shadow: 2px 2px 5px rgba(0,0,0,0.5);
-                            margin-bottom: 15px;
-                            display: flex;
-                            align-items: center;
-                            justify-content: center;
-                            gap: 10px;">
-                    <i class="bi bi-stopwatch" style="font-size: 3rem; color: #6c757d;"></i>
-                    <span id="countdownNumber">5</span>
-                  </div>
-
-
-                  <style>
-                    @keyframes countdownZoom {
-                      0% { transform: scale(1); opacity: 1; }
-                      50% { transform: scale(1.5); opacity: 0.8; }
-                      100% { transform: scale(1); opacity: 1; }
-                    }
-                    #countdown.animate {
-                      animation: countdownZoom 1s ease-in-out;
-                    }
-                  </style>
-
-
                     <!-- Placeholder before countdown -->
-                    <div id="countdownPlaceholder"
-                        style="font-size: 1.2rem; 
-                              color: #6c757d; 
-                            ">
+                    <div id="countdownPlaceholder" class="small text-muted mb-3">
                       ⏳ Ready to start face recognition?
                     </div>
 
                     <!-- Prediction result -->
-                    <p id="predictionResult" class="mt-3 text-primary" 
-                      style="font-weight: 500;"></p>
-                    <hr style="width: 100%;">
+                    <p id="predictionResult" class="mt-2 text-primary fw-bold"></p>
+                    <hr class="w-100">
 
                     <!-- Start button -->
-                    <button id="startButton" class="btn btn-primary btn-lg mt-auto" style="width: 100%;">
+                    <button id="startButton" class="btn btn-primary btn-lg w-100 mt-3">
                       🚀 Start Countdown
                     </button>
                   </div>
                 </div>
 
-                
 
+                </div>
               </div>
-            </div>
 
+              <style>
+                /* Responsive camera placeholder sizes */
+                #esp32Camera, #builtinCamera {
+                  min-height: 200px; 
+                  background-color: #f0f0f0;
+                }
 
+                /* Countdown animation */
+                @keyframes countdownZoom {
+                  0% { transform: scale(1); opacity: 1; }
+                  50% { transform: scale(1.5); opacity: 0.8; }
+                  100% { transform: scale(1); opacity: 1; }
+                }
+                #countdown.animate {
+                  animation: countdownZoom 1s ease-in-out;
+                }
+              </style>
 
               <script>
                 const builtinCamera = document.getElementById('builtinCamera');
                 const esp32Camera = document.getElementById('esp32Camera');
                 const cameraSource = document.getElementById('cameraSource');
 
-                const esp32URL = 'http://192.168.0.103/frame.jpg';
+                const esp32URL = 'http://192.168.0.106/frame.jpg';
                 const refreshRate = 100;
                 let esp32Interval = null;
                 let builtinStream = null;
@@ -547,7 +498,6 @@
                   esp32Camera.style.display = 'none';
                 }
 
-                // Switch camera source on dropdown change
                 cameraSource.addEventListener('change', () => {
                   if (cameraSource.value === 'builtin') {
                     startBuiltinCamera();
@@ -556,19 +506,18 @@
                   }
                 });
 
-                // Start with Built-in Camera by default
                 startBuiltinCamera();
               </script>
-
+            </div>
           </div>
-        </div>
+
         <!-- End Live Camera Section -->
       </div>
 
       <script>
         async function pollForTrigger() {
           try {
-            const response = await fetch("http://192.168.0.101/shouldStart"); // Replace with actual ESP32 IP
+            const response = await fetch("http://192.168.0.105/shouldStart"); // Replace with actual ESP32 IP
             const text = await response.text();
             if (text === "1") {
               document.getElementById("startButton").click();
@@ -594,7 +543,7 @@ const startButton = document.getElementById('startButton');
 const countdownDisplay = document.getElementById('countdown');
 
    function processDisplay() {
-                    fetch('http://192.168.0.101/processDisplay')
+                    fetch('http://192.168.0.105/processDisplay')
                         .then(response => response.text())
                         .then(data => {
                             console.log('ESP32 response:', data);
@@ -651,7 +600,7 @@ function startCountdown() {
 }
 
    function fetchRelay() {
-                    fetch('http://192.168.0.101/open')
+                    fetch('http://192.168.0.105/open')
                         .then(response => response.text())
                         .then(data => {
                             console.log('ESP32 response:', data);
@@ -663,7 +612,7 @@ function startCountdown() {
                 }
 
        function sendRemainingSeconds(remainingSeconds) {
-                    fetch("http://192.168.0.101/setRemainingSeconds", {
+                    fetch("http://192.168.0.105/setRemainingSeconds", {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
                         body: JSON.stringify({ remainingSeconds: remainingSeconds })
@@ -680,7 +629,7 @@ function startCountdown() {
 
     deniedBeepSent = true;
 
-    fetch("http://192.168.0.101/deniedBeep")
+    fetch("http://192.168.0.105/deniedBeep")
       .then(res => res.text())
       .then(response => {
         console.log("Denied beep response:", response);
@@ -908,20 +857,32 @@ function resetButton() {
 
 
   <!-- [ Main Content ] end -->
-  <footer class="pc-footer">
-    <div class="footer-wrapper container-fluid">
-      <div class="row">
-        <div class="col-sm my-1">
-        <p class="m-0"
-            >Capstone Proect &#9829; By IT301 6 Students</p
-          >
-        </div>
-        <div class="col-auto my-1">
-        
-        </div>
+  <footer class="pc-footer" style=" padding: 15px 0;">
+  <div class="footer-wrapper container-fluid">
+    <div class="row align-items-center text-center text-sm-start">
+      
+      <!-- Left side: Logo and branding -->
+      <div class="col-sm d-flex align-items-center justify-content-center justify-content-sm-start mb-2 mb-sm-0" style="gap: 10px;">
+        <img src="../template/admin/dist/assets/images/web_logo.png" alt="SLSU Logo" style="height: 26px; width: 26px; object-fit: contain;">
+        <img src="../template/admin/dist/assets/images/it.jpg" alt="IT Logo" style="height: 26px; width: 26px; object-fit: cover; border-radius: 50%;">
+        <span class="fw-bold" style="font-size: 0.95rem;">SLSU - Tomas Oppus</span>
       </div>
+
+      <!-- Center: Divider -->
+      <div class="col-sm-auto d-none d-sm-flex justify-content-center">
+        <span style="color: #777;">|</span>
+      </div>
+
+      <!-- Right side: Info -->
+      <div class="col-sm d-flex flex-column flex-sm-row align-items-center justify-content-center justify-content-sm-end" style="gap: 8px;">
+       <span>&copy; <?php echo date('Y'); ?> - Capstone Project @ 2025</span>
+        <span class="text-muted" style="font-size: 0.9rem;">Republic Act 10931</span>
+      </div>
+      
     </div>
-  </footer>
+  </div>
+</footer>
+
 
   <!-- [Page Specific JS] start -->
   <script src="../template/admin/dist/assets/js/plugins/apexcharts.min.js"></script>
